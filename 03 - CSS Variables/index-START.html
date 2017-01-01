@@ -21,6 +21,24 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    /*
+      CSS Variables 
+     */
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .hl {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -45,9 +63,27 @@
     input {
       width:100px;
     }
+
   </style>
 
   <script>
+    function updateVariable() {
+      // dataset returns an object w/ all custom data-___ attributes
+      const suffix = this.dataset.sizing || '';
+      console.log("this.value - ", this.value);
+      //How do you use JS to set the value of a css variable?
+      document.documentElement.style.setProperty(`--${this.name}`, `${this.value + suffix}`)
+    }
+    //Listen for change event on SINGLE input value manually
+    //var spacingEl = document.getElementById('spacing');
+    //... versus setting event listeners on all inputs
+    const controls = document.querySelectorAll('.controls input');
+
+    controls.forEach((el)=>{
+      el.addEventListener('change', updateVariable);
+      el.addEventListener('mousemove', updateVariable); // will fire update while user drags input...
+    });
+
   </script>
 
 </body>
