@@ -56,6 +56,12 @@
       font-size: 15px;
     }
 
+    button {
+      width: 100%;
+      height: 100%;
+      padding: 10% 30%
+    }
+
 
   </style>
    <!--
@@ -101,43 +107,39 @@
       <input type="checkbox">
       <p>Don't forget to tweet your result!</p>
     </div>
+    <br />
+    <button onclick="clearAll()">Clear Selections</button>
   </div>
 
 <script>
   //Only for checking, NOT for unchecking
   const inputs     = document.querySelectorAll('.inbox input[type="checkbox"]');
-  const inputArray = Array.prototype.slice.call(inputs);
   // Index of input in inputArray that was clicked most recently
-  let lastClicked  = null;
+  let lastClicked;
 
-  function fillInputs(beg, end) {
-    for(let i=beg; i<=end; i++) {
-      inputArray[i].checked = true;
-    }
-  }
   function setLastClickAndFill(e) {
-    //Ignore clicks that uncheck an input
-    if (!this.checked) {
-      //If all inputs unchecked, reset lastClicked to null
-      if(inputArray.every(input => !input.checked)) {
-          lastClicked = null;
-      }
-      return;
+    let inRange = false;
+    if(lastClicked && e.shiftKey && this.checked) {
+      inputs.forEach(input => {
+        if(input === this || input === lastClicked) {
+          inRange = !inRange;
+        }
+        if(inRange) {
+          input.checked = true;
+        }
+      });
+    lastClicked = this;
     }
-    let clickedIndex = inputArray.indexOf(this);
-    if (e.shiftKey && lastClicked) {
-      if(lastClicked > clickedIndex) {
-        fillInputs(clickedIndex, lastClicked);
-      } else {
-        fillInputs(lastClicked, clickedIndex);
-      }
-    }
-    //After filling necessary inputs, update value of lastClicked
-    lastClicked = clickedIndex;
   }
   inputs.forEach(input => {
     input.addEventListener('click', setLastClickAndFill);
   });
+
+function clearAll() {
+  inputs.forEach(input => {
+    input.checked = false;
+  });
+}
 </script>
 </body>
 </html>
